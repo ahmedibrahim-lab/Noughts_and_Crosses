@@ -1,4 +1,6 @@
 import string
+from datetime import datetime
+import os
 
 def create_grid(size):
     if not size:
@@ -26,9 +28,11 @@ def display_grid(grid):
     col_labels = '   ' + '  '.join(lowercase_letters[:size])
     
     print(col_labels)
+    
     # Print the grid with row labels
     for i, row in enumerate(grid, start=1):
-        print(f"{i}  {'  '.join(row)}")
+        row_display = [f"{cell}" for cell in row]
+        print(f"{i}  {'  '.join(row_display)}")
 
 def check_row(player, grid, row_number):
     return all(item == player for item in grid[row_number])
@@ -59,9 +63,6 @@ def has_someone_won(player, grid, row_number, column_number):
 
 def is_odd(number):
     return number % 2 != 0
-    
-def is_even(number):
-    return number % 2 == 0
 
 def letter_to_number(letter):
     return ord(letter) - ord('a')
@@ -82,9 +83,9 @@ def parse_input(input_str, size):
     return row, col
 
 def main():
-    size = input("Enter the size of the grid you want to play in (1-9): ")
+    size = input("Enter the size of the grid you want to play in (3-9): ")
 
-    while not (size.isdigit() and 1 <= int(size) <= 9):
+    while not (size.isdigit() and 3 <= int(size) <= 9):
         size = input("Sorry but that is not a valid input. Please try again: ")
 
     print("Grid is of size: " + size + ' x ' + size)
@@ -104,7 +105,7 @@ def main():
             
             if grid[row_number][column_number] == '.':
                 grid[row_number][column_number] = current_player
-                display_grid(grid)
+                display_grid(grid, last_move=(row_number, column_number))
                 if has_someone_won(current_player, grid, row_number, column_number):
                     break
                 turn += 1
