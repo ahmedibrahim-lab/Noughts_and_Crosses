@@ -1,130 +1,78 @@
 import string
 
-# Define function to create a grid of dimensions size x size
 def create_grid(size):
-    
-    # Check for empty string
-    if not size:  
+    if not size:
         raise ValueError("Input cannot be empty.")
     
-    # Check for invalid inputs
-    if not all(char in '0123456789' for char in size):
+    if not size.isdigit():
         raise ValueError("Input must be a number.")
     
     size = int(size)
-    
-    # Initialise variables
     grid = []
-    row = []
     
-    for x in range(size):
-        row.append('.')
-    
-    for x in range(size):
-        grid.append(row)
+    for _ in range(size):
+        grid.append(['.'] * size)
         
     return grid
 
 def display_grid(grid):
-    
-    if not grid:  
+    if not grid:
         raise ValueError("Grid not found.")
     
     lowercase_letters = list(string.ascii_lowercase)
     size = len(grid)
     
     # Define the column labels
-    col_labels = '   '
-    for x in range(size):
-        col_labels += lowercase_letters[x] + '  '
-
+    col_labels = '   ' + '  '.join(lowercase_letters[:size])
+    
+    print(col_labels)
     # Print the grid with row labels
     for i, row in enumerate(grid, start=1):
-        # Print the row label and the row values
-        print(f"{i}  ", end='')
-        print('  '.join(row))
-
-    # Print the column labels
-    print(col_labels)
+        print(f"{i}  {'  '.join(row)}")
 
 def check_row(player, grid, row_number):
-    """Checks if all elements in the specified row match the player's marker."""
-    # Iterate over each element in the specified row
-    for item in grid[row_number]:
-        if item != player:
-            return False  # If any element doesn't match, return None
-    return True  # If all elements match, return the player's marker
+    return all(item == player for item in grid[row_number])
 
 def check_column(player, grid, column_number):
-    """Checks if all elements in the specified column match the player's marker."""
-    # Iterate over each row in the grid
-    for row in grid:
-        # Check if the element in the current row at the column_number doesn't match the player
-        if row[column_number] != player:
-            return False  # If any element doesn't match, return None
-    return True  # If all elements match, return the player's marker
+    return all(row[column_number] == player for row in grid)
 
 def check_diagonals(player, grid):
     size = len(grid)
-    diag_1 = []
-    diag_2 = []
-
-    # Collect the main diagonal elements
-    for i in range(size):
-        diag_1.append(grid[i][i])
-
-    # Collect the secondary diagonal elements
-    for i in range(size):
-        diag_2.append(grid[i][size - 1 - i])
-
-    # Check if all elements in the main diagonal match the player
-    if all(item == player for item in diag_1):
-        return player
     
-    # Check if all elements in the secondary diagonal match the player
-    if all(item == player for item in diag_2):
+    # Main diagonal
+    if all(grid[i][i] == player for i in range(size)):
+        return True
+    
+    # Secondary diagonal
+    if all(grid[i][size - 1 - i] == player for i in range(size)):
         return True
 
     return False
 
 def has_someone_won(player, grid, row_number, column_number):
-    
-    if check_row(player, grid, row_number) or check_column(player, grid, column_number) or check_diagonals(player, grid):
-        print(player + " has won. Congratulations!")
+    if (check_row(player, grid, row_number) or
+            check_column(player, grid, column_number) or
+            check_diagonals(player, grid)):
+        print(f"{player} has won. Congratulations!")
         return True
-    else:
-        return False
-    
+    return False
+
 def is_odd(number):
-    """Returns True if the number is odd, False otherwise."""
     return number % 2 != 0
     
 def is_even(number):
-    """Returns True if the number is even, False otherwise."""
     return number % 2 == 0
 
 def letter_to_number(letter):
-    """Converts a lowercase letter to a number where 'a' is 0, 'b' is 1, etc."""
     return ord(letter) - ord('a')
 
 def is_grid_full(grid):
-    """Check if a specific element exists in the grid."""
-    for row in grid:
-        for item in row:
-            if item == '.':
-                return False
-    return True
+    return all(item != '.' for row in grid for item in row)
 
 def main():
-    
-    # Get input from user
     size = input("Enter the size of the grid you want to play in (1-9): ")
 
-    # Validation loop
-    while not all(char in '0123456789' for char in size):
-        size = input("Sorry but that is not a valid input. Please try again: ")
-        
-    while int(size) < 1 or int(size) > 9:
+    while not (size.isdigit() and 1 <= int(size) <= 9):
         size = input("Sorry but that is not a valid input. Please try again: ")
 
     print("Grid is of size: " + size + ' x ' + size)
@@ -133,25 +81,29 @@ def main():
     player1 = 'X'
     player2 = 'O'
     turn = 1
-    while is_grid_full(grid) == False:
-        if is_odd(turn):
-            row_number = int(input("Player 1, please place your X by putting in the corresponding row number: ")) - 1
-            column_number = letter_to_number(input("Player 1, please place your X by putting in the corresponding column letter: "))
-            grid[row_number][column_number] = 'X'
-            if (has_someone_won(player1, grid, row_number, column_number)):
-                break
-            turn += 1
-        if is_even(turn):
-            row_number = int(input("Player 2, please place your O by putting in the corresponding row number: ")) - 1
-            column_number = letter_to_number(input("Player 2, please place your O by putting in the corresponding column letter: "))
-            grid[row_number][column_number] = 'O'
-            if (has_someone_won(player2, grid, row_number, column_number)):
-                break
-            turn += 1
+    
+    while not is_grid_full(grid):
+        current_player = player1 if is_odd(turn) else player2
+        player_number = 1 if current_player == player1 else 2
         
+        try:
+            row_number = int(input(f"Player {player_number}, enter the row number: ")) - 1
+            column_letter = input(f"Player {player_number}, enter the column letter: ").lower()
+            column_number = letter_to_number(column_letter)
             
-             
-        
+            if grid[row_number][column_number] == '.':
+                grid[row_number][column_number] = current_player
+                display_grid(grid)
+                if has_someone_won(current_player, grid, row_number, column_number):
+                    break
+                turn += 1
+            else:
+                print("That spot is already taken. Try again.")
+        except (ValueError, IndexError):
+            print("Invalid input. Please try again.")
+    
+    if is_grid_full(grid):
+        print("It's a draw!")
 
 if __name__ == '__main__':
     main()
