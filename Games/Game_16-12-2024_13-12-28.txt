@@ -1,0 +1,65 @@
+Tic Tac Toe Game Log - Grid Size: 3x3
+
+Step 1: Player 1
+Move: 1a
+1  X  .  .
+2  .  .  .
+3  .  .  .
+
+
+Step 2: Player 2
+Move: 1b
+1  X  O  .
+2  .  .  .
+3  .  .  .
+
+
+Step 3: Player 1
+Move: 2b
+1  X  O  .
+2  .  X  .
+3  .  .  .
+
+
+Step 4: Player 2
+Move: 3c
+1  X  O  .
+2  .  X  .
+3  .  .  O
+
+
+Step 5: Player 1
+Move: 1c
+1  X  O  X
+2  .  X  .
+3  .  .  O
+
+
+Step 6: Player 2
+Move: 3a
+1  X  O  X
+2  .  X  .
+3  O  .  O
+
+
+Step 7: Player 1
+Move: 2a
+1  X  O  X
+2  X  X  .
+3  O  .  O
+
+
+Step 8: Player 2
+Move: 2c
+1  X  O  X
+2  X  X  O
+3  O  .  O
+
+
+Step 9: Player 1
+Move: 3b
+1  X  O  X
+2  X  X  O
+3  O  X  O
+
+Winner: Draw
